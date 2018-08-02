@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+t_layout.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 80px;                  
+  height: 40px;                 
+  padding: 2px;             
+  font: 18px steelblue;        
+  background: white ;   
+  border: 0px;      
+  border-radius: 10px;           
+  pointer-events: none;         
+}
+              
+.legend2 rect {
+  fill:white;
+  stroke:white;
+  opacity:1;
+  position: relative;
+  margin-top:706px;
+  display:inline;
+  border-collapse: collapse;
+  border-spacing: 10px;
+  margin-left: 500px;
+		}
+  
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    
+    /*background-color: rgb(0,0,0); /* Fallback color */
+    /*background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #e5be87;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+svg text {
+  fill: white;
+}
+</style>
+  <meta charset="UTF-8">
+  <title>Data Visualization:</title>
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css'>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="js/d3.v3.min.js"></script>
+</head>
+
+<body>
+  <div class='easytransitions'>
+  <div class='easytransitions_transition'>
+    <div class='div easytransitions_transition__part-1 none'></div>
+    <div class='div easytransitions_transition__part-2 none'></div>
+  </div>
+  <div class='easytransitions_navigation'>
+    <div class='easytransitions_navigation__left'>
+      <i class='icon ion-arrow-left-c'></i>
+    </div>
+    <div class='easytransitions_navigation__right'>
+      <i class='icon ion-arrow-right-c'></i>
+    </div>
+  </div>
+  <section class='active_slide' data-transition='none'>
+  <img src="img/final.jpg" alt="Smiley face" height="700" width="600" align="center" style="position: absolute; top: 30px; left: 30px;"> </img>
+    <div style="position: absolute; top: 100px; left: 660px;" align="center">
+    <font color="#e5be87" style="Serif;"><h1 style="font-family:Times New Roman">TOP 5 LEADING CAUSES OF DEATH IN USA:</h1>
+    <div align="center"> A visualization of top 5 causes of death in USA over the years 2003-2013</div>
+    <div align="right"> - Arpita Saha</div>
+    <div align="right"> (Libraries:D3,jquery,js)</div>
+<br></br>    
+<b>About</b> - This presentation shows the trend of Age adjusted death rates (AADR) from the year 2003 to 2013 distributed across all US states.
+Nearly 75 percent of all deaths in the United States are attributed to just ten causes, with the top four of these accounting for over 50 percent of all deaths which will be visualized in this presentations.
+<br></br>
+<b>Type of visualization</b> - The visualization shows  an interactive slideshow structure. Through 3 slides  we tell a sequential story and enable the user to interact with the visualization.
+Each slide contains 'next' and 'previous' arrows allowing users to navigate forward and backward.
+<br></br>
+<b>Annotations</b> - Each slide contains text annotation depicting the data.The state chart shows annotations on the legends, with tooltip showing the state name.
+In bar and pie charts the number of deaths are shown as the annotation, with pie chart segregating the causes in realtime.
+<br></br>
+<b>Parameters and Triggers</b> - Mouse over and mouse out in the State map acts as triggers to activate the tooltip.
+ We have also made bar chart and pie chart dependent on each other, the category chosen in pie act as a parameter filter to the bar chart and vice versa.
+ Clickable zoom feature is also used in the state graph to zoom in the map for detailed visualization.
+<br></br>
+    </font>
+    </div>
+    <button id="myBtn" style="position: absolute; top: 550px; left: 950px;">About the dataset</button>
+    <div id="myModal" class="modal" style="position: absolute; top: 400px; left: 100px;">
+    <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>The dataset has been been taken from Kaggle.com. Source: https://www.kaggle.com/kingburrito666/leading-causes-of-death-usa.
+    <br></br>The data was in CSV format which was preprocessed using Python library Panda to convert it into Json format.
+    The same data was bucketed and aggregated for the year 2013 again using excel.All the inferences were drawn were verified from the site- https://www.cdc.gov/nchs/fastats/leading-causes-of-death.html</p>
+    </div>
+    </div>
+    <script>
+    var modal = document.getElementById('myModal');
+
+//Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+//Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+//When the user clicks on the button, open the modal
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+//When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+//When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+} 
+    </script>
+  </section>
+  
+  <section data-transition='split_diagonal'>
+    <div>
+    <div style="position: absolute; top: 50px; left: 100px;">
+    <font color="#e5be87" style="Serif;" align="center"><h1 style="font-family:Times New Roman">TOP 5 LEADING CAUSES OF DEATH IN USA:</h1></font>
+    <br></br>
+    <font color="#e5be87" style="Serif;">
+    Although due to advanced technology we see slight decline in AADR, heart disease remains the leading cause of death in the U.S.,accounting for almost 1 in every 4 deaths.
+    The age-adjusted rates are rates that would have existed if the population under study had the same age distribution as the "standard" population. Therefore, they are summary measures adjusted for differences in age distributions.
+    Please take time to hover over the bars and the pie chart to see the % of each cause per year and vice versa.   
+    </font>
+    </div>
+    <div id='dashboard' style="position: absolute; top: 200px; left: 100px;">
+    </div>
+    
+<script>
+function dashboard(id,fData){
+var barColor = 'steelblue';
+function segColor(c){
+return {Accidents:"#807dba", Cancer:"#e08214",Heart_Disease:"#bc122c",Influenza_and_Pneumonia:"#41ab5d",Stroke:"#b7bc12"}[c];
+}
+
+fData.forEach(function(d){
+    d.sum=d.cause.Accidents+d.cause.Cancer+d.cause.Heart_Disease+d.cause.Influenza_and_Pneumonia+d.cause.Stroke;
+    return Math.round(d.sum)});
+
+function histFunc(fD){
+    var hist={},
+    histdim = {t: 60, r: 0, b: 30, l: 0};
+    histdim.w = 700 - histdim.l - histdim.r,
+    histdim.h = 300 - histdim.t - histdim.b;
+
+/*select svg*/
+var svg = d3.select(id).append("svg")
+            .attr("width", histdim.w + histdim.l + histdim.r)
+            .attr("height", histdim.h + histdim.t + histdim.b).append("g")
+            .attr("transform", "translate(" + histdim.l + "," + histdim.t + ")");
+
+/*define xscale*/
+var x = d3.scale.ordinal()
+                .rangeRoundBands([0, histdim.w], 0.5)
+                .domain(fD.map(function(d) { return d[0]; }));
+
+/*append xscale*/
+var xAxis = svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + histdim.h + ")")
+            .call(d3.svg.axis().scale(x).orient("bottom"));
+
+/*define yscale*/
+var y = d3.scale.linear()
+                .range([histdim.h, 0])
+                .domain([0, d3.max(fD, function(d) { return d[1]; })]);
+
+/*append text to y scale*/
+svg.append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("x",-100)
+  .attr("y",0)
+  .attr("dy", "1em")
+  .style("text-anchor", "middle")
+  .text("Death Rate (per 100,000)")
+  .attr("font-size", "15px")
+  .style('fill', 'white');
+
+/*bar chart x-year, y-value*/
+var bars = svg.selectAll(".bar").data(fD)
+  .enter()
+  .append("g")
+  .attr("class", "bar");
+
+bars.append("rect")
+            .attr("x", function(d) {
+              return x(d[0]);
+            })
+            .attr("y", function(d) {
+              return y(d[1]);
+            })
+            .attr("width", x.rangeBand())
+            .attr("height", function(d) {
+              return histdim.h - y(d[1]);
+            })
+            .attr('fill',barColor)
+            .on("mouseover",function mouseover(d){
+                var currec = fData.filter(function(s){
+                  return s.Year == d[0];})[0],
+                    newdata = d3.keys(currec.cause).map(function(s){
+                      return {type:s, cause:currec.cause[s]};
+                    });
+
+                pcdata.update(newdata);
+                legend.update(newdata);
+            })
+            .on("mouseout",function mouseout(d){
+                pcdata.update(causecat);
+                legend.update(causecat);
+            });
+
+/*x axis notation*/
+bars.append("text").text(function(d){
+          return Math.round(d[1])
+        })
+            .attr("x", function(d) {
+          return x(d[0])+x.rangeBand()/2;
+        })
+            .attr("y", function(d) {
+          return y(d[1])-5;
+        })
+            .attr("text-anchor", "middle")
+            .style('fill', 'white');
+
+
+        hist.update = function(newdata, color){
+
+            y.domain([0, d3.max(newdata, function(d) {
+          return Math.round(d[1]);})
+        ]);
+
+            var bars = svg.selectAll(".bar").data(newdata);
+
+            bars.select("rect").transition().duration(500)
+                .attr("y", function(d) {
+                  return y(d[1]);
+                })
+                .attr("height", function(d) {
+                  return histdim.h - y(d[1]);
+                })
+                .attr("fill", color);
+
+            bars.select("text").transition().duration(500)
+                .text(function(d){ return d3.format(",")(d[1])})
+                .attr("y", function(d) {return y(d[1])-5; });
+        }
+        return hist;
+    }
+
+function piech(piedata){
+        var pcdata ={},    pieDim ={w:250, h: 250};
+        pieDim.r = Math.min(pieDim.w,pieDim.h) / 2;
+
+/*pie chart*/
+var piesvg = d3.select(id).append("svg")
+            .attr("width", pieDim.w)
+            .attr("height", pieDim.h)
+            .append("g")
+            .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
+
+        var arc = d3.svg.arc().outerRadius(pieDim.r - 10).innerRadius(pieDim.r - 50);
+
+        var pie = d3.layout.pie().sort(null).value(function(d) { return d.cause; });
+
+        piesvg.selectAll("path").data(pie(piedata)).enter().append("path")
+            .attr("d", arc)
+            .each(function(d) { this._current = d; })
+            .style("fill", function(d) { return segColor(d.data.type); })
+            .on("mouseover",function mouseover(d){
+
+                hist.update(fData.map(function(v){
+                    return [v.Year,v.cause[d.data.type]];}),segColor(d.data.type));
+            })
+            .on("mouseout",function mouseout(d){
+                hist.update(fData.map(function(v){
+                    return [v.Year,Math.round(v.sum)];}), barColor);
+            });
+
+        pcdata.update = function(newdata){
+            piesvg.selectAll("path").data(pie(newdata)).transition().duration(500)
+                .attrTween("d", funcarc);
+        }
+        function funcarc(a) {
+            var i = d3.interpolate(this._current, a);
+            this._current = i(0);
+            return function(t) { return arc(i(t));    };
+        }
+
+        return pcdata;
+    }
+
+
+/*Legend*/
+    function legend(lD){
+        var legend = {};
+
+        var legend = d3.select(id).append("table")
+                       .attr('class','legend');
+        var tr = legend.append("tbody").selectAll("tr").data(lD).enter().append("tr");
+
+        tr.append("td").append("svg").attr("width", '16')
+            .attr("height", '16')
+            .append("rect")
+            .attr("width", '16').attr("height", '16')
+			      .attr("fill",function(d){ return segColor(d.type); })
+			      ;
+
+        tr.append("td")
+        .attr("class",'legdata')
+        .text(function(d){ return d.type;});
+
+        tr.append("td").attr("class",'legendFreq')
+            .text(function(d){ return d3.format(",")(d.cause);});
+
+        tr.append("td").attr("class",'legendPerc')
+            .text(function(d){ return getLegend(d,lD);});
+
+        legend.update = function(newdata){
+            var l = legend.select("tbody").selectAll("tr").data(newdata);
+
+            l.select(".legendFreq").text(function(d){
+              return d3.format(",")(d.cause);
+            });
+
+            l.select(".legendPerc").text(function(d){
+              return getLegend(d,newdata);
+            });
+        }
+
+        function getLegend(d,aD){
+            return d3.format("%")(d.cause/d3.sum(aD.map(function(v){ return v.cause; })));
+        }
+
+        return legend;
+    }
+    var causecat = ['Accidents','Cancer','Heart_Disease','Influenza_and_Pneumonia','Stroke'].map(function(d){
+        return {type:d, cause: d3.sum(fData.map(function(t){ return Math.round(t.cause[d]);}))};
+    });
+
+    var sData = fData.map(function(d){return [d.Year,Math.round(d.sum)];});
+
+    var hist = histFunc(sData),
+        pcdata = piech(causecat),
+        legend= legend(causecat);
+}
+</script>
+
+<script>
+var causeData=[
+  {Year:'2003',cause:{Accidents:37.6, Cancer:190.1, Heart_Disease:236.3, Influenza_and_Pneumonia:21.0, Stroke:54.6}}
+  ,{Year:'2004',cause:{Accidents:38.1, Cancer:186.8, Heart_Disease:221.6, Influenza_and_Pneumonia:20.4, Stroke:51.2}}
+  ,{Year:'2005',cause:{Accidents:39.5, Cancer:185.1, Heart_Disease:216.8, Influenza_and_Pneumonia:21, Stroke:48.0}}
+  ,{Year:'2006',cause:{Accidents:40.2, Cancer:181.8, Heart_Disease:205.5, Influenza_and_Pneumonia:18.4, Stroke:44.8}}
+  ,{Year:'2007',cause:{Accidents:40.4, Cancer:179.3, Heart_Disease:196.1, Influenza_and_Pneumonia:16.8, Stroke:43.5}}
+  ,{Year:'2008',cause:{Accidents:39.2, Cancer:176.4, Heart_Disease:192.1, Influenza_and_Pneumonia:17.6, Stroke:39.6}}
+  ,{Year:'2009',cause:{Accidents:37.5, Cancer:176.8, Heart_Disease:182.8, Influenza_and_Pneumonia:16.5, Stroke:39.1}}
+  ,{Year:'2010',cause:{Accidents:38,   Cancer:172.8, Heart_Disease:179.1, Influenza_and_Pneumonia:15.1, Stroke:37.9}}
+  ,{Year:'2011',cause:{Accidents:39.1, Cancer:169, Heart_Disease:173.7, Influenza_and_Pneumonia:15.7, Stroke:36.9}}
+  ,{Year:'2012',cause:{Accidents:39.1, Cancer:166.5, Heart_Disease:170.5, Influenza_and_Pneumonia:14.9, Stroke:39.4}}
+  ,{Year:'2013',cause:{Accidents:39.4, Cancer:163.2, Heart_Disease:169.8, Influenza_and_Pneumonia:15.9, Stroke:36.2}}
+];
+
+dashboard('#dashboard',causeData);
+</script>
+    </div>
+  </section>
+  
+  <section data-transition='split_diagonal_alt'>
+    <div style="position: absolute; top: 50px; left: 100px;">
+        <font color="#e5be87" style="Serif;" align="center"><h1 style="font-family:Times New Roman">TOP 5 LEADING CAUSES OF DEATH IN USA:</h1></font>
+        <br></br>
+        <div style="position: absolute; top: 180px; left: 400px;">
+        <font color="FFFFFF" style="Serif;">US STATE CHART</font>
+        </div>
+        <font color="#e5be87" style="Serif;">
+        This dataset represents the state wise age-adjusted death rates(AADR) for the 5 leading causes of death in the United States beginning in 2013.
+        Data is based on information from all resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. 
+        It is clearly visible that Mississipi,Oklahoma,West Virginia and Alabama have the highest AADR.
+       </font>
+       <div style="position: absolute; top: 200px; left: 100px;">
+       <svg id="map" width="960" height="500" ></svg>
+       </div>
+      <script type="text/javascript">
+/*Define the canvas properties*/
+var height = 500;
+var width = 1000;
+/*Use d3.albersUSA to contruct Map*/
+    var projection = d3.geo.albersUsa()
+    .translate([width/2, height/2])    /*Draw map to the centre of the screen*/
+    .scale([1000])  /*Scale map to see all states*/   
+    .precision(.1);       
+
+      var path = d3.geo.path() /*Pass map projection to the center*/
+      .projection(projection);
+
+    
+//Define linear scale for output
+var color = d3.scale.linear()
+        .range(["#0b0842","#112491","#214c91","#3075b2"]);
+     /*Categories of Legends described below*/
+        var legendText = ["500-700", "700-800", "800-900", "Above 900"];
+/*creation of SVG Element*/
+var svg = d3.select("#map")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+        
+//Append tool tip layout */
+var t_layout = d3.select("body")
+        .append("t_layout")   
+        .attr("class", "tooltip")               
+        .style("opacity", 0);
+/* Load the death rate CSV file taken from kaggle.com*/
+d3.csv("leading_cause_death.csv", function(data) {
+color.domain([3,2,1,0]); /*mapping input data range to color*/
+/*Load GeoJSON data and merge with states data*/
+d3.json("us-states.json", function(json) {
+
+for (var file_val = 0; file_val < data.length; file_val=file_val+1) {
+   /*Assing USA state name*/
+
+  var USAState = data[file_val].STATE;
+   //Grab data value 
+
+  var datanamestate = [];
+  datanamestate.push(data[file_val].STATE);
+    /*Take in the bucket values*/
+  var dataValue = data[file_val].Bucket;
+    /*Parse the Jason file*/
+  for (var j = 0; j < json.features.length; j++)  {
+    var jsonState = json.features[j].properties.name;
+    if (USAState == jsonState) {
+     
+    // Copy the data value into the JSON
+  json.features[j].properties.deaths = dataValue; 
+   break;
+   }}}
+    
+svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (1000/ 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "100px") 
+        .style("text-decoration", "underline")  
+        .text("Value vs Date Graph");
+
+//Bind the data to the SVG and create one path per GeoJSON feature
+svg.selectAll("path").append("svg")
+  .data(json.features)
+  .enter()
+  .append("path")
+  .attr("d", path)
+  .style("stroke", "#FFFFFF")
+  .style("stroke-width", "1")
+  .call(d3.behavior.zoom().on("zoom", function () {
+        svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+      }))
+  .style("fill", function(d) {
+//Get data value
+  var bucket_value = d.properties.deaths;
+ 
+  if (bucket_value>=0)  {
+/*If the value exists - */
+return color(bucket_value);
+} else {
+/*If value is not defined then default blue*/
+  return "blue";
+  }
+})
+
+/*Mouse over will activate the tooltip*/
+.on("mouseover", function(d) {      
+  t_layout.transition()        
+    .duration(200)      
+   .style("opacity", 1); 
+      t_layout.text(d.properties.name)
+        .attr('stroke-width',2)
+     .style("left", (d3.event.pageX) + "px")     
+     .style("top", (d3.event.pageY - 20) + "px");    
+  })
+  /*Tool tip fades out on removal*/        
+    .on("mouseout", function(d) {       
+     t_layout.transition()        
+     .duration(200)      
+        .attr('stroke-width',0)
+    .style("opacity", 0);   
+    });
+
+     
+/* append the legends*/
+var legend2 = d3.select("#map").append("svg")
+          .attr("class", "legend2")
+          .attr("width", 140)
+          .attr("height", 200)
+          .attr("y", 50)
+          .selectAll("g")
+          .data(color.domain().slice().reverse())
+          .enter()
+          .append("g")
+          .attr("transform", function(d, i) { return "translate(20," + i * 20 + ")"; });
+    legend2.append("rect")
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", color);
+    legend2.append("text")
+          .data(legendText)
+          .attr("x", 24)
+          .attr("y", 5)
+          .attr("dy", ".40em")
+          .text(function(d) { return d; });
+  });
+});
+</script>
+  </div>
+  </section>
+  <section>
+  <div id="bubble" style="position: absolute; top: 300px; left: 600px;">
+  
+ <font color="#e5be87" style="Serif;" align="center" size="12"><h1 style="font-family:Times New Roman">Thanks!!</h1></font>
+  </section>
+  
+</div>
+  <script src='js/jquery.min.js'></script>
+  <script src="js/index.js"></script>
+
+</body>
+</html>
